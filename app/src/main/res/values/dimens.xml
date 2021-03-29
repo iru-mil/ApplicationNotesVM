@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="card_margin">10dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="card_elevation">5dp</dimen>
+    <dimen name="separator_height">10dp</dimen>
+</resources>
