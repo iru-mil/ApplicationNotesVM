@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ApplicationNotesVM</string>
+    <string name="app_name">Приложение Заметки</string>
+    <string name="title_home">Главная</string>
+    <string name="title_notes">Заметки</string>
+    <string name="title_settings">Настройки</string>
+    <string name="my_notes">Мои Заметки</string>
 </resources>
