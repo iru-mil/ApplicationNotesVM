@@ -14,6 +14,15 @@
             android:background="@color/light_steel_blue"
             app:title="@string/my_notes" />
 
+        <TextView
+            android:id="@+id/filter"
+            style="@style/TextAppearance.AppCompat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/grey_snow"
+            android:padding="@dimen/card_margin"
+            android:text="@string/button_filter" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -22,6 +31,8 @@
         android:layout_height="match_parent"
         android:paddingStart="@dimen/card_margin"
         android:paddingEnd="@dimen/card_margin"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
