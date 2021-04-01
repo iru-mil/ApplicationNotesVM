@@ -4,4 +4,27 @@
     <string name="title_notes">Заметки</string>
     <string name="title_settings">Настройки</string>
     <string name="my_notes">Мои Заметки</string>
+    <string name="action_delete">Удалить</string>
+    <string name="action_update">Изменить</string>
+    <string name="button_filter">Фильтровать по дате</string>
+    <string name="adding_data">Добавление данных (в разработке)</string>
+    <string name="title_adding_update">Создать</string>
+    <string name="empty_input">"…"</string>
+    <string name="saving">Сохранить</string>
+    <string name="action_to_archive">В архив</string>
+
+    <string-array name="note_names">
+        <item>Звонок</item>
+        <item>Встреча</item>
+        <item>Мероприятие</item>
+        <item>Покупка</item>
+        <item>Другое</item>
+    </string-array>
+
+    <string-array name="note_importance">
+        <item>Высокая</item>
+        <item>Средняя</item>
+        <item>Низкая</item>
+    </string-array>
+
 </resources>

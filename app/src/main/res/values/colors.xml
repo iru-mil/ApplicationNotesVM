@@ -9,5 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="honeydew">#F0FFF0</color>
     <color name="light_steel_blue">#B0C4DE</color>
+    <color name="grey_snow">#CDC9C9</color>
     <color name="medium_aquamarine">#66CDAA</color>
 </resources>

@@ -18,8 +18,9 @@ public class HomeFragment extends Fragment {
     public static final String TAG = "HomeFragment";
     private TextView textView;
 
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ru.geekbrains.applicationnotesvm.ui.home.HomeViewModel homeViewModel = new ViewModelProvider(this).get(ru.geekbrains.applicationnotesvm.ui.home.HomeViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         textView = root.findViewById(R.id.text_home);
         homeViewModel.getText().observe(getViewLifecycleOwner(), s -> textView.setText(s));

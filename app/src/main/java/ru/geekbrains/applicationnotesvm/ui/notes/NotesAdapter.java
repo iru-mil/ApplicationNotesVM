@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +22,12 @@ import ru.geekbrains.applicationnotesvm.domain.Note;
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHolder> {
     private final List<Note> items = new ArrayList<>();
     private OnNoteClicked noteClicked;
+    private OnNoteLongClicked noteLongClicked;
+    private final Fragment fragment;
+
+    public NotesAdapter(Fragment fragment) {
+        this.fragment = fragment;
+    }
 
     public void addItems(List<Note> toAdd) {
         items.addAll(toAdd);
@@ -28,6 +35,22 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     public void clear() {
         items.clear();
+    }
+
+    public void setNoteClicked(OnNoteClicked noteClicked) {
+        this.noteClicked = noteClicked;
+    }
+
+    public void setNoteLongClicked(OnNoteLongClicked noteLongClicked) {
+        this.noteLongClicked = noteLongClicked;
+    }
+
+    interface OnNoteClicked {
+        void onNoteClicked(Note note);
+    }
+
+    interface OnNoteLongClicked {
+        void onNoteLongClicked(View itemView, int position, Note note);
     }
 
     @NonNull
@@ -55,7 +78,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         } else {
             holder.getStatus().setText("Выполнено");
         }
-
         Glide.with(holder.getImage())
                 .load(item.getImageUrl())
                 .into(holder.getImage());
@@ -66,16 +88,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         return items.size();
     }
 
-//    public OnNoteClicked getNoteClicked() {
-//        return noteClicked;
-//    }
-
-    public void setNoteClicked(OnNoteClicked noteClicked) {
-        this.noteClicked = noteClicked;
-    }
-
-    interface OnNoteClicked {
-        void onNoteClicked(Note note);
+    public void removeAtPosition(int position) {
+        items.remove(position);
     }
 
     public class NoteViewHolder extends RecyclerView.ViewHolder {
@@ -87,6 +101,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            fragment.registerForContextMenu(itemView);
+
             title = itemView.findViewById(R.id.title);
             status = itemView.findViewById(R.id.status);
             purport = itemView.findViewById(R.id.purport);
@@ -96,6 +112,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                 if (noteClicked != null) {
                     noteClicked.onNoteClicked(items.get(getAdapterPosition()));
                 }
+            });
+            itemView.setOnLongClickListener(v -> {
+                if (noteLongClicked != null) {
+                    noteLongClicked.onNoteLongClicked(itemView, getAdapterPosition(), items.get(getAdapterPosition()));
+                }
+                return true;
             });
         }
 
@@ -114,6 +136,5 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         public TextView getStatus() {
             return status;
         }
-
     }
 }

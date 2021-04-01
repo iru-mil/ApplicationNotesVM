@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/title_settings" />
 
+    <item
+        android:id="@+id/navigation_adding_update"
+        android:icon="@drawable/ic_baseline_note_add_24"
+        android:title="@string/title_adding_update" />
+
 </menu>

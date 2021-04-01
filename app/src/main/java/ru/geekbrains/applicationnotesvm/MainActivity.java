@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import ru.geekbrains.applicationnotesvm.ui.adding.AddingUpdateFragment;
 import ru.geekbrains.applicationnotesvm.ui.home.HomeFragment;
 import ru.geekbrains.applicationnotesvm.ui.notes.NotesFragment;
 import ru.geekbrains.applicationnotesvm.ui.settings.SettingsFragment;
@@ -28,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             } else if (itemID == R.id.navigation_settings) {
                 openTab(new SettingsFragment(), SettingsFragment.TAG);
+                return true;
+            } else if (itemID == R.id.navigation_adding_update) {
+                openTab(new AddingUpdateFragment(), AddingUpdateFragment.TAG);
                 return true;
             }
             return false;
