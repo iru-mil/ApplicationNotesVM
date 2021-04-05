@@ -8,12 +8,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -40,7 +42,8 @@ public class NotesFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        notesViewModel = new ViewModelProvider(this).get(NotesViewModel.class);
+        notesViewModel = new ViewModelProvider(this, new NotesViewModelFactory()).get(NotesViewModel.class);
+
         notesViewModel.fetchNotes();
         adapter = new NotesAdapter(this);
         adapter.setNoteClicked(note -> Toast.makeText(requireContext(), note.getNoteName(), Toast.LENGTH_SHORT).show());
@@ -69,6 +72,7 @@ public class NotesFragment extends Fragment {
         });
 
         RecyclerView notesList = view.findViewById(R.id.notes_list);
+        ProgressBar progressBar = view.findViewById(R.id.progress);
         notesList.setAdapter(adapter);
 
         DefaultItemAnimator animator = new DefaultItemAnimator();
@@ -87,6 +91,18 @@ public class NotesFragment extends Fragment {
                     adapter.clear();
                     adapter.addItems(notes);
                     adapter.notifyDataSetChanged();
+                });
+
+        notesViewModel.getProgressLiveData()
+                .observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(Boolean isVisible) {
+                        if (isVisible) {
+                            progressBar.setVisibility(View.VISIBLE);
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
                 });
 
         notesViewModel.getRemovedItemPositionLiveData()
