@@ -1,17 +1,23 @@
 package ru.geekbrains.applicationnotesvm.domain;
 
+import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.RequiresApi;
+
 import java.util.Date;
 
-public class Note {
+public class Note implements Parcelable {
     private String id;
     private String noteName;
     private String notePurport;
     private Date noteCreationDate;
-    private int noteImportanceDegree;
+    private double noteImportanceDegree;
     private boolean noteToArchive;
     private String noteImageUrl;
 
-    public Note(String id, String noteName, String notePurport, Date noteCreationDate, int noteImportanceDegree, boolean noteToArchive, String noteImageUrl) {
+    public Note(String id, String noteName, String notePurport, Date noteCreationDate, double noteImportanceDegree, boolean noteToArchive, String noteImageUrl) {
         this.id = id;
         this.noteName = noteName;
         this.notePurport = notePurport;
@@ -20,6 +26,27 @@ public class Note {
         this.noteToArchive = noteToArchive;
         this.noteImageUrl = noteImageUrl;
     }
+
+    protected Note(Parcel in) {
+        id = in.readString();
+        noteName = in.readString();
+        notePurport = in.readString();
+        noteImportanceDegree = in.readDouble();
+        noteToArchive = in.readByte() != 0;
+        noteImageUrl = in.readString();
+    }
+
+    public static final Creator<Note> CREATOR = new Creator<Note>() {
+        @Override
+        public Note createFromParcel(Parcel in) {
+            return new Note(in);
+        }
+
+        @Override
+        public Note[] newArray(int size) {
+            return new Note[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -37,7 +64,7 @@ public class Note {
         return noteCreationDate;
     }
 
-    public int getNoteImportanceDegree() {
+    public double getNoteImportanceDegree() {
         return noteImportanceDegree;
     }
 
@@ -75,5 +102,21 @@ public class Note {
 
     public void setImageUrl(String imageUrl) {
         this.noteImageUrl = imageUrl;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(noteName);
+        dest.writeString(notePurport);
+        dest.writeString(noteImageUrl);
+        dest.writeDouble(noteImportanceDegree);
+        dest.writeBoolean(noteToArchive);
     }
 }

@@ -6,26 +6,38 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-import ru.geekbrains.applicationnotesvm.domain.MockNotesRepository;
 import ru.geekbrains.applicationnotesvm.domain.Note;
 import ru.geekbrains.applicationnotesvm.domain.NotesRepository;
 
 public class NotesViewModel extends ViewModel {
 
-    private final NotesRepository notesRepository = MockNotesRepository.INSTANCE;
+    private final NotesRepository notesRepository;
     private final MutableLiveData<List<Note>> notesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> progressLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> removedItemPositionLiveData = new MutableLiveData<>();
+
+    public NotesViewModel(NotesRepository notesRepository) {
+        this.notesRepository = notesRepository;
+    }
 
     public LiveData<Integer> getRemovedItemPositionLiveData() {
         return removedItemPositionLiveData;
     }
 
     public void fetchNotes() {
-        notesLiveData.setValue(notesRepository.getNotes());
+        progressLiveData.setValue(true);
+        notesRepository.getNotes(value -> {
+            notesLiveData.postValue(value);
+            progressLiveData.setValue(false);
+        });
     }
 
     public LiveData<List<Note>> getNotesLiveData() {
         return notesLiveData;
+    }
+
+    public LiveData<Boolean> getProgressLiveData() {
+        return progressLiveData;
     }
 
     public void deleteAtPosition(int contextMenuItemPosition) {
