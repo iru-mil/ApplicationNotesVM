@@ -12,6 +12,8 @@
     <string name="empty_input">"…"</string>
     <string name="saving">Сохранить</string>
     <string name="action_to_archive">В архив</string>
+    <string name="action_add_new">Добавить заметку</string>
+    <string name="action_sort">Отсортировать заметки</string>
 
     <string-array name="note_names">
         <item>Звонок</item>

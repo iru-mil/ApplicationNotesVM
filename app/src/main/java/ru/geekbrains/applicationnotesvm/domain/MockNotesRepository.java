@@ -10,7 +10,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class MockNotesRepository implements NotesRepository {
-    //public static final NotesRepository INSTANCE = new MockNotesRepository();
+    public static final NotesRepository INSTANCE = new MockNotesRepository();
     private final Executor executor = Executors.newCachedThreadPool();
     private final Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
@@ -18,7 +18,7 @@ public class MockNotesRepository implements NotesRepository {
     public void getNotes(Callback<List<Note>> callback) {
         executor.execute(() -> {
             try {
-                Thread.sleep(2000L);
+                Thread.sleep(500L);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -31,5 +31,31 @@ public class MockNotesRepository implements NotesRepository {
 
             mainThreadHandler.post(() -> callback.onResult(notes));
         });
+    }
+
+    @Override
+    public void addNewNote(Callback<Note> noteCallback) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(500L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mainThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Note note = new Note("id6", "Покупка", "Купить ноутбук для работы", new Date(), 1, false, "https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
+                        noteCallback.onResult(note);
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
+    public void deleteNote(Note note, Callback<Object> objectCallback) {
+        objectCallback.onResult(new Object());
     }
 }

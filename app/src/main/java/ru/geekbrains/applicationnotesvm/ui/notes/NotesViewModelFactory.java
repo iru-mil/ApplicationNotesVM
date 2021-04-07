@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import ru.geekbrains.applicationnotesvm.domain.FirestoreNotesRepository;
+import ru.geekbrains.applicationnotesvm.domain.MockNotesRepository;
 //import ru.geekbrains.applicationnotesvm.domain.MockNotesRepository;
 
 public class NotesViewModelFactory implements ViewModelProvider.Factory {

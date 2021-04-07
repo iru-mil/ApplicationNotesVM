@@ -1,10 +1,16 @@
 package ru.geekbrains.applicationnotesvm.domain;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class FirestoreNotesRepository implements NotesRepository {
@@ -42,30 +48,41 @@ public class FirestoreNotesRepository implements NotesRepository {
                 });
     }
 
-//    public void addNewNote(Callback<Note> noteCallback) {
-//
-//        Note note = new Note("", "Мероприятие", "Провести мероприятие 1.04", new Date(), 2, false, "https://images.pexels.com/photos/1157557/pexels-photo-1157557.jpeg");
-//
-//        HashMap<String, Object> data = new HashMap<>();
-//        data.put(FIELD_NOTE_NAME, note.getNoteName());
-//        data.put(FIELD_NOTE_PURPORT, note.getNotePurport());
-//        data.put(FIELD_NOTE_IMAGE_URL, note.getImageUrl());
-//        data.put(FIELD_NOTE_IMPORTANCE_DEGREE, note.getNoteImportanceDegree());
-//        data.put(FIELD_NOTE_TO_ARCHIVE, note.isNoteToArchive());
-//        data.put(FIELD_NOTE_CREATION_DATE,note.getNoteCreationDate());
-//
-//        fireStore.collection(NOTES_COLLECTION)
-//                .add(data).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentReference> task) {
-//
-//                String id = task.getResult().getId();
-//
-//                note.setId(id);
-//
-//                noteCallback.onResult(note);
-//            }
-//        });
-//    }
+    @Override
+    public void addNewNote(Callback<Note> noteCallback) {
+
+        Note note = new Note("", "Покупка", "Купить ноутбук для работы", new Date(), 1, false, "https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
+
+        HashMap<String, Object> notes = new HashMap<>();
+        notes.put(FIELD_NOTE_NAME, note.getNoteName());
+        notes.put(FIELD_NOTE_PURPORT, note.getNotePurport());
+        notes.put(FIELD_NOTE_IMAGE_URL, note.getImageUrl());
+        notes.put(FIELD_NOTE_IMPORTANCE_DEGREE, note.getNoteImportanceDegree());
+        notes.put(FIELD_NOTE_TO_ARCHIVE, note.isNoteToArchive());
+        notes.put(FIELD_NOTE_CREATION_DATE, note.getNoteCreationDate());
+
+        fireStore.collection(NOTES_COLLECTION)
+                .add(notes).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                String id = task.getResult().getId();
+                note.setId(id);
+                noteCallback.onResult(note);
+            }
+        });
+    }
+
+    @Override
+    public void deleteNote(Note note, Callback<Object> objectCallback) {
+        fireStore.collection(NOTES_COLLECTION)
+                .document(note.getId())
+                .delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        objectCallback.onResult(new Object());
+                    }
+                });
+    }
 
 }

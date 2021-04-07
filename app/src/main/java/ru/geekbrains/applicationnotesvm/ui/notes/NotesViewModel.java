@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
+import ru.geekbrains.applicationnotesvm.domain.Callback;
 import ru.geekbrains.applicationnotesvm.domain.Note;
 import ru.geekbrains.applicationnotesvm.domain.NotesRepository;
 
@@ -14,6 +15,7 @@ public class NotesViewModel extends ViewModel {
     private final NotesRepository notesRepository;
     private final MutableLiveData<List<Note>> notesLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> progressLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Note> newNoteAddedLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> removedItemPositionLiveData = new MutableLiveData<>();
 
     public NotesViewModel(NotesRepository notesRepository) {
@@ -40,8 +42,30 @@ public class NotesViewModel extends ViewModel {
         return progressLiveData;
     }
 
-    public void deleteAtPosition(int contextMenuItemPosition) {
-        removedItemPositionLiveData.setValue(contextMenuItemPosition);
+    public void deleteAtPosition(int contextMenuItemPosition, Note note) {
+        progressLiveData.setValue(true);
+        notesRepository.deleteNote(note, new Callback<Object>() {
+            @Override
+            public void onResult(Object value) {
+                removedItemPositionLiveData.postValue(contextMenuItemPosition);
+                progressLiveData.setValue(false);
+            }
+        });
+    }
+
+    public void addNewNote() {
+        progressLiveData.setValue(true);
+        notesRepository.addNewNote(new Callback<Note>() {
+            @Override
+            public void onResult(Note value) {
+                newNoteAddedLiveData.postValue(value);
+                progressLiveData.setValue(false);
+            }
+        });
+    }
+
+    public LiveData<Note> getNewNoteAddedLiveData() {
+        return newNoteAddedLiveData;
     }
 
     @Override
