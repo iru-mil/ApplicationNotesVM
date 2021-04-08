@@ -25,17 +25,26 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     private OnNoteLongClicked noteLongClicked;
     private final Fragment fragment;
 
+    public void setItems(List<Note> toSet) {
+        items.clear();
+        items.addAll(toSet);
+    }
+
+    public void addItem(Note note) {
+        items.add(note);
+    }
+
     public NotesAdapter(Fragment fragment) {
         this.fragment = fragment;
     }
 
-    public void addItems(List<Note> toAdd) {
-        items.addAll(toAdd);
-    }
-
-    public void clear() {
-        items.clear();
-    }
+//    public void addItems(List<Note> toAdd) {
+//        items.addAll(toAdd);
+//    }
+//
+//    public void clear() {
+//        items.clear();
+//    }
 
     public void setNoteClicked(OnNoteClicked noteClicked) {
         this.noteClicked = noteClicked;
@@ -43,6 +52,11 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
 
     public void setNoteLongClicked(OnNoteLongClicked noteLongClicked) {
         this.noteLongClicked = noteLongClicked;
+    }
+
+    public Note getItemAtIndex(int contextMenuItemPosition) {
+        return null;
+        //return ((NoteAdapterItem)items.get(contextMenuItemPosition)).getNote();
     }
 
     interface OnNoteClicked {
@@ -138,3 +152,5 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         }
     }
 }
+
+
