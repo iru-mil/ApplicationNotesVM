@@ -30,7 +30,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         items.addAll(toSet);
     }
 
-    public void addItem (Note note) {
+    public void addItem(Note note) {
         items.add(note);
     }
 
@@ -53,6 +53,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
     public void setNoteLongClicked(OnNoteLongClicked noteLongClicked) {
         this.noteLongClicked = noteLongClicked;
     }
+
     public Note getItemAtIndex(int contextMenuItemPosition) {
         return null;
         //return ((NoteAdapterItem)items.get(contextMenuItemPosition)).getNote();

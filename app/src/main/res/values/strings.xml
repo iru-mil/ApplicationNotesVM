@@ -14,6 +14,9 @@
     <string name="action_to_archive">В архив</string>
     <string name="action_add_new">Добавить заметку</string>
     <string name="action_sort">Отсортировать заметки</string>
+    <string name="warning_text"> Заметка будет удалена</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
 
     <string-array name="note_names">
         <item>Звонок</item>

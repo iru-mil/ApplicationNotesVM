@@ -1,6 +1,8 @@
 package ru.geekbrains.applicationnotesvm.ui.notes;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,13 +36,37 @@ import java.util.Objects;
 
 import ru.geekbrains.applicationnotesvm.R;
 import ru.geekbrains.applicationnotesvm.domain.Note;
+import ru.geekbrains.applicationnotesvm.ui.dialog.AlertDialogFragment;
+
 
 public class NotesFragment extends Fragment {
     public static final String TAG = "NotesFragment";
+    private static final int REQUEST_CODE = 1;
     private NotesViewModel notesViewModel;
     private NotesAdapter adapter;
     private int contextMenuItemPosition;
     public SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+
+    public void openAlertDialog() {
+        DialogFragment fragment = new AlertDialogFragment();
+        fragment.setTargetFragment(this, REQUEST_CODE);
+        fragment.show(getFragmentManager(), fragment.getClass().getName());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE) {
+                int value = data.getIntExtra(AlertDialogFragment.TAG, -1);
+                if (value == 1) {
+                    Toast.makeText(requireContext(), "Удалена заметка " + contextMenuItemPosition, Toast.LENGTH_LONG).show();
+                } else if (value == 0) {
+                    Toast.makeText(requireContext(), "Удаление отменено", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,7 +107,7 @@ public class NotesFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.action_add_new) {
-                     notesViewModel.addNewNote();
+                    notesViewModel.addNewNote();
                 } else {
                     Toast.makeText(requireContext(), "Заметки отсортированы", Toast.LENGTH_LONG).show();
                 }
@@ -124,8 +151,8 @@ public class NotesFragment extends Fragment {
                     @Override
                     public void onChanged(Note note) {
                         adapter.addItem(note);
-                        adapter.notifyItemInserted(adapter.getItemCount()-1);
-                        notesList.smoothScrollToPosition(adapter.getItemCount()-1);
+                        adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                        notesList.smoothScrollToPosition(adapter.getItemCount() - 1);
                     }
                 });
 
@@ -146,7 +173,9 @@ public class NotesFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
-            Toast.makeText(requireContext(), "удалена заметка " + contextMenuItemPosition, Toast.LENGTH_SHORT).show();
+            //int itemIndex = contextMenuItemPosition;
+            openAlertDialog();
+            //Toast.makeText(requireContext(), "удалена заметка " + contextMenuItemPosition, Toast.LENGTH_SHORT).show();
             //notesViewModel.deleteAtPosition(contextMenuItemPosition, adapter.getItemAtIndex(contextMenuItemPosition));
             return true;
         }
