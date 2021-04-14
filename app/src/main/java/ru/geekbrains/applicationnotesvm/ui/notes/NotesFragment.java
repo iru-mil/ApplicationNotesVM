@@ -23,6 +23,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +32,7 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -60,7 +62,8 @@ public class NotesFragment extends Fragment {
             if (requestCode == REQUEST_CODE) {
                 int value = data.getIntExtra(AlertDialogFragment.TAG, -1);
                 if (value == 1) {
-                    Toast.makeText(requireContext(), "Удалена заметка " + contextMenuItemPosition, Toast.LENGTH_LONG).show();
+                    notesViewModel.deleteAtPosition(adapter.getItemAtIndex(contextMenuItemPosition));
+
                 } else if (value == 0) {
                     Toast.makeText(requireContext(), "Удаление отменено", Toast.LENGTH_LONG).show();
                 }
@@ -88,19 +91,24 @@ public class NotesFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_notes, container, false);
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        TextView filter = view.findViewById(R.id.filter);
-
-        filter.setOnClickListener(v -> {
-            MaterialDatePicker picker = MaterialDatePicker.Builder.datePicker().build();
-            picker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<Long>) selection -> Toast.makeText(requireContext(), "выбрана дата: " + simpleDateFormat.format(new Date(selection)), Toast.LENGTH_LONG).show());
-            picker.show(getChildFragmentManager(), "MaterialDatePicker");
-        });
-
         RecyclerView notesList = view.findViewById(R.id.notes_list);
+        notesList.setAdapter(adapter);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(),2);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (adapter.getItemViewType(position) == NotesAdapter.ITEM_HEADER) {
+                    return 2;
+                }
+                return 1;
+            }
+        });
+        notesList.setLayoutManager(gridLayoutManager);
+
         ProgressBar progressBar = view.findViewById(R.id.progress);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -115,23 +123,36 @@ public class NotesFragment extends Fragment {
             }
         });
 
-        notesList.setAdapter(adapter);
 
-        DefaultItemAnimator animator = new DefaultItemAnimator();
-        animator.setRemoveDuration(2000);
-        notesList.setItemAnimator(animator);
-        notesList.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        DividerItemDecoration itemDecoration = new
-                DividerItemDecoration(Objects.requireNonNull(getContext()), LinearLayoutManager.VERTICAL);
-        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator,
-                null));
-        notesList.addItemDecoration(itemDecoration);
+        TextView filter = view.findViewById(R.id.filter);
+
+        filter.setOnClickListener(v -> {
+            MaterialDatePicker picker = MaterialDatePicker.Builder.datePicker().build();
+            picker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<Long>) selection -> Toast.makeText(requireContext(), "выбрана дата: " + simpleDateFormat.format(new Date(selection)), Toast.LENGTH_LONG).show());
+            picker.show(getChildFragmentManager(), "MaterialDatePicker");
+        });
+
+//        DefaultItemAnimator animator = new DefaultItemAnimator();
+//        animator.setRemoveDuration(2000);
+//        notesList.setItemAnimator(animator);
+
+        //notesList.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+
+
+//        DividerItemDecoration itemDecoration = new
+//                DividerItemDecoration(Objects.requireNonNull(getContext()), LinearLayoutManager.VERTICAL);
+//        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator,
+//                null));
+//        notesList.addItemDecoration(itemDecoration);
 
         notesViewModel.getNotesLiveData()
-                .observe(getViewLifecycleOwner(), notes -> {
-                    adapter.setItems(notes);
-                    adapter.notifyDataSetChanged();
+                .observe(getViewLifecycleOwner(), new Observer<List<AdapterItem>>() {
+                    @Override
+                    public void onChanged(List<AdapterItem> notes) {
+                        adapter.setItems(notes);
+                    }
                 });
 
         notesViewModel.getProgressLiveData()
@@ -146,21 +167,29 @@ public class NotesFragment extends Fragment {
                     }
                 });
 
-        notesViewModel.getNewNoteAddedLiveData()
-                .observe(getViewLifecycleOwner(), new Observer<Note>() {
-                    @Override
-                    public void onChanged(Note note) {
-                        adapter.addItem(note);
-                        adapter.notifyItemInserted(adapter.getItemCount() - 1);
-                        notesList.smoothScrollToPosition(adapter.getItemCount() - 1);
-                    }
-                });
+//        notesViewModel.getNewNoteAddedLiveData()
+//                .observe(getViewLifecycleOwner(), new Observer<Note>() {
+//                    @Override
+//                    public void onChanged(Note note) {
+////                        adapter.addItem(note);
+////                        adapter.notifyItemInserted(adapter.getItemCount() - 1);
+////                        notesList.smoothScrollToPosition(adapter.getItemCount() - 1);
+//                    }
+//                });
 
-        notesViewModel.getRemovedItemPositionLiveData()
-                .observe(getViewLifecycleOwner(), position -> {
-                    adapter.removeAtPosition(position);
-                    adapter.notifyItemRemoved(position);
-                });
+//        notesViewModel.getRemovedItemPositionLiveData()
+//                .observe(getViewLifecycleOwner(), position -> {
+////                    adapter.removeAtPosition(position);
+////                    adapter.notifyItemRemoved(position);
+//                });
+
+//        notesViewModel.getSelectedDateLiveData()
+//                .observe(getViewLifecycleOwner(), new Observer<String>() {
+//                    @Override
+//                    public void onChanged(String message) {
+//                        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+//                    }
+//                });
     }
 
     @Override
@@ -173,10 +202,7 @@ public class NotesFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_delete) {
-            //int itemIndex = contextMenuItemPosition;
             openAlertDialog();
-            //Toast.makeText(requireContext(), "удалена заметка " + contextMenuItemPosition, Toast.LENGTH_SHORT).show();
-            //notesViewModel.deleteAtPosition(contextMenuItemPosition, adapter.getItemAtIndex(contextMenuItemPosition));
             return true;
         }
         if (item.getItemId() == R.id.action_update) {

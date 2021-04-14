@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ public class FirestoreNotesRepository implements NotesRepository {
     public static final String FIELD_NOTE_CREATION_DATE = "noteCreationDate";
     public static final String FIELD_NOTE_IMPORTANCE_DEGREE = "noteImportanceDegree";
     public static final String FIELD_NOTE_TO_ARCHIVE = "noteToArchive";
-
     private final FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
 
     @Override
@@ -40,7 +40,6 @@ public class FirestoreNotesRepository implements NotesRepository {
                         Date noteCreationDate = doc.getDate(FIELD_NOTE_CREATION_DATE);
                         double noteImportanceDegree = doc.getDouble(FIELD_NOTE_IMPORTANCE_DEGREE);
                         Boolean noteToArchive = doc.getBoolean(FIELD_NOTE_TO_ARCHIVE);
-
                         Note note = new Note(doc.getId(), noteName, notePurport, noteCreationDate, noteImportanceDegree, noteToArchive, noteImageUrl);
                         result.add(note);
                     }
@@ -50,8 +49,12 @@ public class FirestoreNotesRepository implements NotesRepository {
 
     @Override
     public void addNewNote(Callback<Note> noteCallback) {
-
-        Note note = new Note("", "Покупка", "Купить ноутбук для работы", new Date(), 1, false, "https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR, 2021);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        Note note = new Note("", "Покупка", "Купить ноутбук для работы", calendar.getTime(), 1, false, "https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
 
         HashMap<String, Object> notes = new HashMap<>();
         notes.put(FIELD_NOTE_NAME, note.getNoteName());
