@@ -4,8 +4,8 @@ import java.util.Objects;
 
 import ru.geekbrains.applicationnotesvm.domain.Note;
 
-public class NoteAdapterItem implements AdapterItem{
-    private Note note;
+public class NoteAdapterItem implements AdapterItem {
+    private final Note note;
 
     public NoteAdapterItem(Note note) {
         this.note = note;

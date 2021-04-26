@@ -17,6 +17,10 @@
     <string name="warning_text"> Заметка будет удалена</string>
     <string name="ok">ОК</string>
     <string name="cancel">Отмена</string>
+    <string name="note">Заметка</string>
+    <string name="title_note_name">Вид заметки</string>
+    <string name="title_note_purport">Содержание заметки</string>
+    <string name="title_note_importance">Приоритет заметки</string>
 
     <string-array name="note_names">
         <item>Звонок</item>
@@ -27,9 +31,9 @@
     </string-array>
 
     <string-array name="note_importance">
-        <item>Высокая</item>
-        <item>Средняя</item>
-        <item>Низкая</item>
+        <item>Высокий</item>
+        <item>Средний</item>
+        <item>Низкий</item>
     </string-array>
 
 </resources>

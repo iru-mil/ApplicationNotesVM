@@ -101,24 +101,16 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return items.size();
     }
 
-//    public OnNoteClicked getNoteClicked() {
-//        return noteClicked;
-//    }
-
     public void setNoteClicked(OnNoteClicked noteClicked) {
         this.noteClicked = noteClicked;
     }
-
-//    public OnNoteLongClicked getNoteLongClicked() {
-//        return noteLongClicked;
-//    }
 
     public void setNoteLongClicked(OnNoteLongClicked noteLongClicked) {
         this.noteLongClicked = noteLongClicked;
     }
 
     public Note getItemAtIndex(int contextMenuItemPosition) {
-        return ((NoteAdapterItem)items.get(contextMenuItemPosition)).getNote();
+        return ((NoteAdapterItem) items.get(contextMenuItemPosition)).getNote();
     }
 
     public interface OnNoteClicked {
@@ -135,7 +127,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         public HeaderViewHolder(@NonNull View itemView) {
             super(itemView);
-
             header = (TextView) itemView;
         }
 
@@ -172,22 +163,6 @@ public class NotesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return true;
             });
         }
-
-//    public void addItem(Note note) {
-//        //items.add(note);
-//    }
-
-//    public void addItems(List<Note> toAdd) {
-//        items.addAll(toAdd);
-//    }
-//
-//    public void clear() {
-//        items.clear();
-//    }
-
-//    public void removeAtPosition(int position) {
-//        //items.remove(position);
-//    }
 
         public TextView getTitle() {
             return title;

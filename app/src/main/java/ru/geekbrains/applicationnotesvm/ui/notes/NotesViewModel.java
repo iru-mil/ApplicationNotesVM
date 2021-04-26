@@ -24,15 +24,10 @@ public class NotesViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Note>> notesLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> progressLiveData = new MutableLiveData<>();
     private final MutableLiveData<Note> newNoteAddedLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Integer> removedItemPositionLiveData = new MutableLiveData<>();
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
 
     public NotesViewModel(NotesRepository notesRepository) {
         this.notesRepository = notesRepository;
-    }
-
-    public LiveData<Integer> getRemovedItemPositionLiveData() {
-        return removedItemPositionLiveData;
     }
 
     public void fetchNotes() {
@@ -98,14 +93,9 @@ public class NotesViewModel extends ViewModel {
         });
     }
 
-    public LiveData<Note> getNewNoteAddedLiveData() {
-        return newNoteAddedLiveData;
-    }
-
     @Override
     protected void onCleared() {
         super.onCleared();
     }
-
 
 }

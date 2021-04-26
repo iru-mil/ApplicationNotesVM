@@ -54,7 +54,7 @@ public class FirestoreNotesRepository implements NotesRepository {
         calendar.set(Calendar.YEAR, 2021);
         calendar.set(Calendar.MONTH, 3);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
-        Note note = new Note("", "Покупка", "Купить ноутбук для работы", calendar.getTime(), 1, false, "https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
+        Note note = new Note("", "Покупка", "Купить ноутбук для работы", calendar.getTime(), 1, false, "https://images.pexels.com/photos/7103/writing-notes-idea-conference.jpg");
 
         HashMap<String, Object> notes = new HashMap<>();
         notes.put(FIELD_NOTE_NAME, note.getNoteName());
@@ -88,4 +88,44 @@ public class FirestoreNotesRepository implements NotesRepository {
                 });
     }
 
+    @Override
+    public void updateNote(Object importance, Note note, Callback<Object> objectCallback) {
+
+        if (importance.toString().equals("Высокий")) {
+            note.setNoteImportanceDegree(1);
+        } else if (importance.toString().equals("Средний")) {
+            note.setNoteImportanceDegree(2);
+        } else if (importance.toString().equals("Низкий")) {
+            note.setNoteImportanceDegree(3);
+        }
+
+        if (note.getNoteName().equals("Звонок")) {
+            note.setImageUrl("https://images.pexels.com/photos/3783559/pexels-photo-3783559.jpeg");
+        } else if (note.getNoteName().equals("Покупка")) {
+            note.setImageUrl("https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
+        } else if (note.getNoteName().equals("Мероприятие")) {
+            note.setImageUrl("https://images.pexels.com/photos/1157557/pexels-photo-1157557.jpeg");
+        } else if (note.getNoteName().equals("Встреча")) {
+            note.setImageUrl("https://images.pexels.com/photos/5698093/pexels-photo-5698093.jpeg");
+        } else if (note.getNoteName().equals("Другое")) {
+            note.setImageUrl("https://images.pexels.com/photos/7103/writing-notes-idea-conference.jpg");
+        }
+
+        HashMap<String, Object> notes = new HashMap<>();
+        notes.put(FIELD_NOTE_NAME, note.getNoteName());
+        notes.put(FIELD_NOTE_PURPORT, note.getNotePurport());
+        notes.put(FIELD_NOTE_IMAGE_URL, note.getImageUrl());
+        notes.put(FIELD_NOTE_IMPORTANCE_DEGREE, note.getNoteImportanceDegree());
+        notes.put(FIELD_NOTE_TO_ARCHIVE, note.isNoteToArchive());
+        notes.put(FIELD_NOTE_CREATION_DATE, note.getNoteCreationDate());
+
+        fireStore.collection(NOTES_COLLECTION)
+                .document(note.getId()).update(notes)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        objectCallback.onResult(new Object());
+                    }
+                });
+    }
 }

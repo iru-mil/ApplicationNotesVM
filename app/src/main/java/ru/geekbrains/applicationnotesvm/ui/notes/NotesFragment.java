@@ -1,7 +1,7 @@
 package ru.geekbrains.applicationnotesvm.ui.notes;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -21,10 +21,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -34,12 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 import ru.geekbrains.applicationnotesvm.R;
 import ru.geekbrains.applicationnotesvm.domain.Note;
 import ru.geekbrains.applicationnotesvm.ui.dialog.AlertDialogFragment;
-
 
 public class NotesFragment extends Fragment {
     public static final String TAG = "NotesFragment";
@@ -48,6 +43,21 @@ public class NotesFragment extends Fragment {
     private NotesAdapter adapter;
     private int contextMenuItemPosition;
     public SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.getDefault());
+    private OnNoteSelected listener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (context instanceof OnNoteSelected) {
+            listener = (OnNoteSelected) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        listener = null;
+        super.onDetach();
+    }
 
     public void openAlertDialog() {
         DialogFragment fragment = new AlertDialogFragment();
@@ -63,7 +73,6 @@ public class NotesFragment extends Fragment {
                 int value = data.getIntExtra(AlertDialogFragment.TAG, -1);
                 if (value == 1) {
                     notesViewModel.deleteAtPosition(adapter.getItemAtIndex(contextMenuItemPosition));
-
                 } else if (value == 0) {
                     Toast.makeText(requireContext(), "Удаление отменено", Toast.LENGTH_LONG).show();
                 }
@@ -76,9 +85,16 @@ public class NotesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         notesViewModel = new ViewModelProvider(this, new NotesViewModelFactory()).get(NotesViewModel.class);
 
-        notesViewModel.fetchNotes();
         adapter = new NotesAdapter(this);
-        adapter.setNoteClicked(note -> Toast.makeText(requireContext(), note.getNoteName(), Toast.LENGTH_SHORT).show());
+        adapter.setNoteClicked(new NotesAdapter.OnNoteClicked() {
+            @Override
+            public void onNoteClicked(Note note) {
+                if (listener != null) {
+                    listener.onNoteSelected(note);
+                }
+            }
+        });
+
         adapter.setNoteLongClicked((itemView, position, note) -> {
             contextMenuItemPosition = position;
             itemView.showContextMenu();
@@ -97,7 +113,7 @@ public class NotesFragment extends Fragment {
         RecyclerView notesList = view.findViewById(R.id.notes_list);
         notesList.setAdapter(adapter);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(),2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(requireContext(), 2);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -124,7 +140,6 @@ public class NotesFragment extends Fragment {
         });
 
 
-
         TextView filter = view.findViewById(R.id.filter);
 
         filter.setOnClickListener(v -> {
@@ -132,20 +147,6 @@ public class NotesFragment extends Fragment {
             picker.addOnPositiveButtonClickListener((MaterialPickerOnPositiveButtonClickListener<Long>) selection -> Toast.makeText(requireContext(), "выбрана дата: " + simpleDateFormat.format(new Date(selection)), Toast.LENGTH_LONG).show());
             picker.show(getChildFragmentManager(), "MaterialDatePicker");
         });
-
-//        DefaultItemAnimator animator = new DefaultItemAnimator();
-//        animator.setRemoveDuration(2000);
-//        notesList.setItemAnimator(animator);
-
-        //notesList.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-
-
-//        DividerItemDecoration itemDecoration = new
-//                DividerItemDecoration(Objects.requireNonNull(getContext()), LinearLayoutManager.VERTICAL);
-//        itemDecoration.setDrawable(getResources().getDrawable(R.drawable.separator,
-//                null));
-//        notesList.addItemDecoration(itemDecoration);
 
         notesViewModel.getNotesLiveData()
                 .observe(getViewLifecycleOwner(), new Observer<List<AdapterItem>>() {
@@ -166,30 +167,12 @@ public class NotesFragment extends Fragment {
                         }
                     }
                 });
+    }
 
-//        notesViewModel.getNewNoteAddedLiveData()
-//                .observe(getViewLifecycleOwner(), new Observer<Note>() {
-//                    @Override
-//                    public void onChanged(Note note) {
-////                        adapter.addItem(note);
-////                        adapter.notifyItemInserted(adapter.getItemCount() - 1);
-////                        notesList.smoothScrollToPosition(adapter.getItemCount() - 1);
-//                    }
-//                });
-
-//        notesViewModel.getRemovedItemPositionLiveData()
-//                .observe(getViewLifecycleOwner(), position -> {
-////                    adapter.removeAtPosition(position);
-////                    adapter.notifyItemRemoved(position);
-//                });
-
-//        notesViewModel.getSelectedDateLiveData()
-//                .observe(getViewLifecycleOwner(), new Observer<String>() {
-//                    @Override
-//                    public void onChanged(String message) {
-//                        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
-//                    }
-//                });
+    @Override
+    public void onStart() {
+        super.onStart();
+        notesViewModel.fetchNotes();
     }
 
     @Override
@@ -214,6 +197,10 @@ public class NotesFragment extends Fragment {
             return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    public interface OnNoteSelected {
+        void onNoteSelected(Note note);
     }
 
 }

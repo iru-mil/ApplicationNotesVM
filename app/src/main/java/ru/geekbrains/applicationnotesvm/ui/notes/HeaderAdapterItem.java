@@ -2,8 +2,8 @@ package ru.geekbrains.applicationnotesvm.ui.notes;
 
 import java.util.Objects;
 
-public class HeaderAdapterItem implements AdapterItem{
-    private String header;
+public class HeaderAdapterItem implements AdapterItem {
+    private final String header;
 
     public HeaderAdapterItem(String header) {
         this.header = header;
