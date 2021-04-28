@@ -25,6 +25,7 @@ import ru.geekbrains.applicationnotesvm.domain.Note;
 public class UpdateFragment extends Fragment {
     public static final String TAG = "AddingUpdateFragment";
     private static final String ARG_NOTE = "ARG_NOTE";
+    private static final int START_IMPORTANCE_DEGREE = 1;
 
     public static UpdateFragment newInstance(Note note) {
         UpdateFragment fragment = new UpdateFragment();
@@ -84,11 +85,11 @@ public class UpdateFragment extends Fragment {
         }
 
         Spinner spinnerImportance = view.findViewById(R.id.adding_importance);
-        if (note.getNoteImportanceDegree() == 1) {
+        if (note.getNoteImportanceDegree() == START_IMPORTANCE_DEGREE) {
             spinnerImportance.setSelection(0);
-        } else if (note.getNoteImportanceDegree() == 2) {
+        } else if (note.getNoteImportanceDegree() == START_IMPORTANCE_DEGREE + 1) {
             spinnerImportance.setSelection(1);
-        } else if (note.getNoteImportanceDegree() == 3) {
+        } else if (note.getNoteImportanceDegree() == START_IMPORTANCE_DEGREE + 2) {
             spinnerImportance.setSelection(2);
         }
 

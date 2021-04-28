@@ -9,10 +9,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import ru.geekbrains.applicationnotesvm.domain.Note;
 import ru.geekbrains.applicationnotesvm.ui.add.AddFragment;
-import ru.geekbrains.applicationnotesvm.ui.update.UpdateFragment;
 import ru.geekbrains.applicationnotesvm.ui.home.HomeFragment;
 import ru.geekbrains.applicationnotesvm.ui.notes.NotesFragment;
 import ru.geekbrains.applicationnotesvm.ui.settings.SettingsFragment;
+import ru.geekbrains.applicationnotesvm.ui.update.UpdateFragment;
 
 public class MainActivity extends AppCompatActivity implements NotesFragment.OnNoteSelected, UpdateFragment.OnNoteSaved {
 
@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements NotesFragment.OnN
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         navView.setOnNavigationItemSelectedListener(item -> {
             int itemID = item.getItemId();
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements NotesFragment.OnN
         }
     }
 
-    private void openTab(Fragment fragment, String tag) {
+    public void openTab(Fragment fragment, String tag) {
         Fragment addedFragment = getSupportFragmentManager().findFragmentByTag(tag);
         getSupportFragmentManager().popBackStack();
         if (addedFragment == null) {
@@ -68,4 +69,5 @@ public class MainActivity extends AppCompatActivity implements NotesFragment.OnN
         getSupportFragmentManager()
                 .popBackStack();
     }
+
 }

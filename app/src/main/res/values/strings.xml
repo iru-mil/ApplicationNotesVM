@@ -21,6 +21,19 @@
     <string name="title_note_name">Вид заметки</string>
     <string name="title_note_purport">Содержание заметки</string>
     <string name="title_note_importance">Приоритет заметки</string>
+    <string name="theme">Тема приложения</string>
+    <string name="display">Отображение заметок</string>
+    <string name="dark_theme">Тёмная</string>
+    <string name="light_theme">Светлая</string>
+    <string name="grey_theme">Серая</string>
+    <string name="display_list">Списком</string>
+    <string name="display_two_column">2 колонки</string>
+    <string name="display_three_column">3 колонки</string>
+    <string name="about">О приложении</string>
+    <string name="archive">Архив</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="in_developing">экран в разработке</string>
 
     <string-array name="note_names">
         <item>Звонок</item>
