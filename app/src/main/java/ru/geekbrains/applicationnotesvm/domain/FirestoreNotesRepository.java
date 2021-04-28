@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ public class FirestoreNotesRepository implements NotesRepository {
     public static final String FIELD_NOTE_CREATION_DATE = "noteCreationDate";
     public static final String FIELD_NOTE_IMPORTANCE_DEGREE = "noteImportanceDegree";
     public static final String FIELD_NOTE_TO_ARCHIVE = "noteToArchive";
-
     private final FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
 
     @Override
@@ -40,7 +40,6 @@ public class FirestoreNotesRepository implements NotesRepository {
                         Date noteCreationDate = doc.getDate(FIELD_NOTE_CREATION_DATE);
                         double noteImportanceDegree = doc.getDouble(FIELD_NOTE_IMPORTANCE_DEGREE);
                         Boolean noteToArchive = doc.getBoolean(FIELD_NOTE_TO_ARCHIVE);
-
                         Note note = new Note(doc.getId(), noteName, notePurport, noteCreationDate, noteImportanceDegree, noteToArchive, noteImageUrl);
                         result.add(note);
                     }
@@ -50,8 +49,12 @@ public class FirestoreNotesRepository implements NotesRepository {
 
     @Override
     public void addNewNote(Callback<Note> noteCallback) {
-
-        Note note = new Note("", "Покупка", "Купить ноутбук для работы", new Date(), 1, false, "https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR, 2021);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        Note note = new Note("", "Покупка", "Купить ноутбук для работы", calendar.getTime(), 1, false, "https://images.pexels.com/photos/7103/writing-notes-idea-conference.jpg");
 
         HashMap<String, Object> notes = new HashMap<>();
         notes.put(FIELD_NOTE_NAME, note.getNoteName());
@@ -85,4 +88,44 @@ public class FirestoreNotesRepository implements NotesRepository {
                 });
     }
 
+    @Override
+    public void updateNote(Object importance, Note note, Callback<Object> objectCallback) {
+
+        if (importance.toString().equals("Высокий")) {
+            note.setNoteImportanceDegree(1);
+        } else if (importance.toString().equals("Средний")) {
+            note.setNoteImportanceDegree(2);
+        } else if (importance.toString().equals("Низкий")) {
+            note.setNoteImportanceDegree(3);
+        }
+
+        if (note.getNoteName().equals("Звонок")) {
+            note.setImageUrl("https://images.pexels.com/photos/3783559/pexels-photo-3783559.jpeg");
+        } else if (note.getNoteName().equals("Покупка")) {
+            note.setImageUrl("https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg");
+        } else if (note.getNoteName().equals("Мероприятие")) {
+            note.setImageUrl("https://images.pexels.com/photos/1157557/pexels-photo-1157557.jpeg");
+        } else if (note.getNoteName().equals("Встреча")) {
+            note.setImageUrl("https://images.pexels.com/photos/5698093/pexels-photo-5698093.jpeg");
+        } else if (note.getNoteName().equals("Другое")) {
+            note.setImageUrl("https://images.pexels.com/photos/7103/writing-notes-idea-conference.jpg");
+        }
+
+        HashMap<String, Object> notes = new HashMap<>();
+        notes.put(FIELD_NOTE_NAME, note.getNoteName());
+        notes.put(FIELD_NOTE_PURPORT, note.getNotePurport());
+        notes.put(FIELD_NOTE_IMAGE_URL, note.getImageUrl());
+        notes.put(FIELD_NOTE_IMPORTANCE_DEGREE, note.getNoteImportanceDegree());
+        notes.put(FIELD_NOTE_TO_ARCHIVE, note.isNoteToArchive());
+        notes.put(FIELD_NOTE_CREATION_DATE, note.getNoteCreationDate());
+
+        fireStore.collection(NOTES_COLLECTION)
+                .document(note.getId()).update(notes)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        objectCallback.onResult(new Object());
+                    }
+                });
+    }
 }

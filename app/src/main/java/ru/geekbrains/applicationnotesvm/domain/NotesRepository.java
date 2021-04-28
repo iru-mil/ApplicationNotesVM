@@ -9,4 +9,6 @@ public interface NotesRepository {
     void addNewNote(Callback<Note> noteCallback);
 
     void deleteNote(Note note, Callback<Object> objectCallback);
+
+    void updateNote(Object importance, Note note, Callback<Object> objectCallback);
 }

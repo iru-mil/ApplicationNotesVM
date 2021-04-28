@@ -4,4 +4,7 @@
     <dimen name="card_corner_radius">20dp</dimen>
     <dimen name="card_elevation">5dp</dimen>
     <dimen name="separator_height">10dp</dimen>
+    <dimen name="item_settings">25dp</dimen>
+    <dimen name="nav_header_height">150dp</dimen>
+    <dimen name="nav_header_dimen">20sp</dimen>
 </resources>
